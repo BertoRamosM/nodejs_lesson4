@@ -7,11 +7,11 @@ const ACCEPTED_ORIGINS = [
   "https://ourmoviesweb.com",
 ]
 
-
-export const corsMiddleware = (acceptedOrigins = ACCEPTED_ORIGINS) => cors({
+//if no parameter passed will be empty object
+export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => cors({
   origin: (origin, callback) => {
     
-    if (ACCEPTED_ORIGINS.includes(origin)) {
+    if (acceptedOrigins.includes(origin)) {
       return callback(null, true)
     }
 
