@@ -25,7 +25,7 @@ PATCH http://localhost:1234/movies/6a360a18-c645-4b47-9a7b-2a71babbf3e0
 Content-Type: application/json
 
 {
-  "title": "avatar"
+  "title": "avatarlol"
 }
 
 ###delete a movie
