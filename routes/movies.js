@@ -12,18 +12,10 @@ app.disable("x-powered-by");
 app.use(json());
 
 
-const ACCEPTED_ORIGINS = [
-  "http://localhost:8080",
-  "http://localhost:3000",
-  "http://localhost:1234",
-  //and production urls:
-  "https://ourmoviesweb.com",
-  //and any other website that we want to allow, we just need to get the origin from the request header
-];
-
 import {validateMovie, validatePartialMovie} from "../schemas/movieScheme.js"
 
 import { createRequire } from "node:module";
+import { MovieModel } from "../models/movie.js";
 const require = createRequire(import.meta.url);
 const movies = require("../movies.json");
 
@@ -31,16 +23,9 @@ const movies = require("../movies.json");
 
 export const moviesRouter = Router();
 
-moviesRouter.get("/", (req, res) => {
- 
-
+moviesRouter.get("/", async (req, res) => {
   const { genre } = req.query;
-  if (genre) {
-    const filteredMovies = movies.filter((movie) =>
-      movie.genre.some((g) => g.toLowerCase() === genre.toLowerCase())
-    );
-    return res.json(filteredMovies);
-  }
+  const movies = await MovieModel.getAll({genre})
   res.json(movies);
 });
 
