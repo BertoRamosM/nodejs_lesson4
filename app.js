@@ -2,12 +2,22 @@
 //"type": "commonjs", to "type": "module",
 //we then click the ... under the first "required" and we tap "ctrl + ." and we import automatically
 import express, { json } from 'express'
-import movies, { filter, find, push, findIndex, splice } from './movies.json'
+
+import fs from 'node:fs';
+
+//we have to declare to nodejs using ESModules that this file its a JSON!!!
+//BUTTT THIS SYNTAX ITS DEPRECATED!!!
+/* import movies from './movies.json' assert {type : 'json'} */
+
+//thats the correct way of doing it for this project:
+const movies = JSON.parse(fs.readFileSync('./movies.json', 'utf-8'))
+
+
 //crypto its for creating news "id"
 import { randomUUID } from 'crypto'
 
 //zod its for data valudastion
-import { validateMovie, validatePartialMovie } from './schemas/movieScheme'
+import { validateMovie, validatePartialMovie } from './schemas/movieScheme.js'
 
 const app = express()
 
@@ -55,7 +65,7 @@ that requieres a propery called OPTIONS
  
   const { genre } = req.query
   if (genre) {
-    const filteredMovies = filter(movie => movie.genre.some(g => g.toLowerCase() === genre.toLowerCase())
+    const filteredMovies = movies.filter(movie => movie.genre.some(g => g.toLowerCase() === genre.toLowerCase())
     )
     return res.json(filteredMovies)
   }
@@ -65,7 +75,7 @@ that requieres a propery called OPTIONS
 //path-to-regexp library
 app.get('/movies/:id', (req, res) => {
   const { id } = req.params
-  const movie = find(movie => movie.id === id)
+  const movie = movies.find(movie => movie.id === id)
    
   if (movie) {
     res.json(movie);
@@ -111,7 +121,7 @@ app.post('/movies', (req, res) => {
 
   //this is not rest because we are saving the estate of the application in memory!!!!!!!!
   //instead we should add it to a db
-  push(newMovie)
+  movies.push(newMovie)
 
   //201 means new resource created
   //we return the new object created to update the clients cache
@@ -132,7 +142,7 @@ app.patch('/movies/:id', (req, res) => {
 
   
   //in this case we use the index to verify if it exists and to later works on it
-  const movieIndex = findIndex(movie => movie.id === id)
+  const movieIndex = movies.findIndex(movie => movie.id === id)
 
   //index-1 means the movie dosnt exists 
   if (!movieIndex === -1) return res.status(404).json({ message: 'Movie not found' })
@@ -150,11 +160,11 @@ app.patch('/movies/:id', (req, res) => {
 app.delete('/movies/:id', (req, res) => {
   
   const { id } = req.params
-  const movieIndex = find(movie => movie.id === id)
+  const movieIndex = movies.find(movie => movie.id === id)
   if (movieIndex === -1) {
     return res.status(400).json({message: 'Movie not found'})
   }
-  splice(movieIndex, 1)
+  movies.splice(movieIndex, 1)
   return res.json({message:'Movie deleted'})
 })
 
