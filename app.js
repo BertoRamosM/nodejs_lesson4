@@ -167,6 +167,7 @@ app.options('/movies', (req, res) => {
 })
 
 
+//its important to always add the option of the env viariable, and always in MAJ
 const PORT = process.env.PORT ?? 1234
 
 app.listen(PORT, () => {
