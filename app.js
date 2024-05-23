@@ -9,8 +9,16 @@ import fs from 'node:fs';
 //BUTTT THIS SYNTAX ITS DEPRECATED!!!
 /* import movies from './movies.json' assert {type : 'json'} */
 
-//thats the correct way of doing it for this project:
-const movies = JSON.parse(fs.readFileSync('./movies.json', 'utf-8'))
+//thats the first correct way of doing it for this project:
+/* 
+const movies = JSON.parse(fs.readFileSync('./movies.json', 'utf-8')) 
+*/
+
+//this is a better way to read JSON in ESModules recommended for now, by creating a method require
+import { createRequire } from 'node:module';
+//Here, createRequire is called with import.meta.url, which is a URL string representing the location of the current module. This creates a require function that can be used within this module as if it were a CommonJS module.
+const require = createRequire(import.meta.url)
+const movies = require("./movies.json")
 
 
 //crypto its for creating news "id"
