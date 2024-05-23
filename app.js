@@ -1,16 +1,18 @@
-// here we are using commonJS
-const express = require('express')
-const movies = require('./movies.json')
+// here we have migrated from commonJS from course 3 to ESModules, we also have to migrate the type of project in the package.json =>
+//"type": "commonjs", to "type": "module",
+//we then click the ... under the first "required" and we tap "ctrl + ." and we import automatically
+import express, { json } from 'express'
+import movies, { filter, find, push, findIndex, splice } from './movies.json'
 //crypto its for creating news "id"
-const crypto = require('crypto')
+import { randomUUID } from 'crypto'
 
 //zod its for data valudastion
-const {validateMovie, validatePartialMovie} = require('./schemas/movieScheme')
+import { validateMovie, validatePartialMovie } from './schemas/movieScheme'
 
 const app = express()
 
 //the middleware of express to validate the body of the request
-app.use(express.json())
+app.use(json())
 
 app.disable('x-powered-by')
 
@@ -53,7 +55,7 @@ that requieres a propery called OPTIONS
  
   const { genre } = req.query
   if (genre) {
-    const filteredMovies = movies.filter(movie => movie.genre.some(g => g.toLowerCase() === genre.toLowerCase())
+    const filteredMovies = filter(movie => movie.genre.some(g => g.toLowerCase() === genre.toLowerCase())
     )
     return res.json(filteredMovies)
   }
@@ -63,7 +65,7 @@ that requieres a propery called OPTIONS
 //path-to-regexp library
 app.get('/movies/:id', (req, res) => {
   const { id } = req.params
-  const movie = movies.find(movie => movie.id === id)
+  const movie = find(movie => movie.id === id)
    
   if (movie) {
     res.json(movie);
@@ -92,7 +94,7 @@ app.post('/movies', (req, res) => {
   const newMovie = {
     //to add an id, we use crypto from nodejs
     //universal unique identifier
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     ...result.data
     /* 
     title,
@@ -109,7 +111,7 @@ app.post('/movies', (req, res) => {
 
   //this is not rest because we are saving the estate of the application in memory!!!!!!!!
   //instead we should add it to a db
-  movies.push(newMovie)
+  push(newMovie)
 
   //201 means new resource created
   //we return the new object created to update the clients cache
@@ -130,7 +132,7 @@ app.patch('/movies/:id', (req, res) => {
 
   
   //in this case we use the index to verify if it exists and to later works on it
-  const movieIndex = movies.findIndex(movie => movie.id === id)
+  const movieIndex = findIndex(movie => movie.id === id)
 
   //index-1 means the movie dosnt exists 
   if (!movieIndex === -1) return res.status(404).json({ message: 'Movie not found' })
@@ -148,11 +150,11 @@ app.patch('/movies/:id', (req, res) => {
 app.delete('/movies/:id', (req, res) => {
   
   const { id } = req.params
-  const movieIndex = movies.find(movie => movie.id === id)
+  const movieIndex = find(movie => movie.id === id)
   if (movieIndex === -1) {
     return res.status(400).json({message: 'Movie not found'})
   }
-  movies.splice(movieIndex, 1)
+  splice(movieIndex, 1)
   return res.json({message:'Movie deleted'})
 })
 
