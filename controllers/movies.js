@@ -22,25 +22,25 @@ export class MovieController {
     res.json(movies);
   }
 
-  static async getById(req, res) {
-    const { id } = req.params;
-    const movie = await MovieModel.getById(id)
   
-    if (movie) {
-      res.json(movie);
-    } else {
-      res.status(404).json({ error: "Movie not found" });
-    }
-  }
+  static async getById(req, res) {
+      const { id } = req.params;
+      // Fetch the movie by I
+      const movie = await MovieModel.getById({ id });
+      // Validate the ID (assuming it's supposed to be a UUID or some specific format)
+      if (movie) return res.json(movie)
+      // Check if the movie was found
+        res.status(404).json({ error: "Movie not found" });
+      }
+    
+  
 
 
   static async create(req, res) {
   const result = validateMovie(req.body);
 
-  if (result.error) {
-    return res.status(400).json({
-      error: JSON.parse(result.error.message),
-    });
+  if (!result.success) {
+    return res.status(400).json({ error: JSON.parse(result.error.message) })
   }
   const newMovie = await MovieModel.create({ input: result.data })
 
@@ -52,7 +52,7 @@ export class MovieController {
   const { id } = req.params;
 
   const result = await MovieModel.delete({id})
-  const movieIndex = movies.find((movie) => movie.id === id);
+
   if (result === false) {
     return res.status(400).json({ message: "Movie not found" });
   }

@@ -3,7 +3,7 @@ import express, { json } from 'express'
 import { moviesRouter } from './routes/movies.js';
 import { corsMiddleware } from './middleware/cors.js';
 
-
+//routing, controllers, models, 
 
 const app = express()
 app.use(corsMiddleware({}));
