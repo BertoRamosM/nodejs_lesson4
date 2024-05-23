@@ -27,3 +27,6 @@ Content-Type: application/json
 {
   "title": "avatar"
 }
+
+###delete a movie
+DELETE http://localhost:1234/movies/6a360a18-c645-4b47-9a7b-2a71babbf3e0
