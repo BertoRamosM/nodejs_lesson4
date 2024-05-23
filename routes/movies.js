@@ -29,10 +29,10 @@ moviesRouter.get("/", async (req, res) => {
   res.json(movies);
 });
 
-moviesRouter.get("/:id", (req, res) => {
+moviesRouter.get("/:id", async (req, res) => {
   const { id } = req.params;
-  const movie = movies.find((movie) => movie.id === id);
-
+  const movie = await MovieModel.getById(id)
+  
   if (movie) {
     res.json(movie);
   } else {
@@ -40,7 +40,7 @@ moviesRouter.get("/:id", (req, res) => {
   }
 });
 
-moviesRouter.post("/", (req, res) => {
+moviesRouter.post("/", async (req, res) => {
   const result = validateMovie(req.body);
 
   if (result.error) {
@@ -48,28 +48,26 @@ moviesRouter.post("/", (req, res) => {
       error: JSON.parse(result.error.message),
     });
   }
+  const newMovie = await MovieModel.create({ input: result.data })
 
-  const newMovie = {
-    id: randomUUID(),
-    ...result.data,
-  };
-  movies.push(newMovie);
   res.status(201).json(newMovie);
 });
 
 
-moviesRouter.delete("/:id", (req, res) => {
+moviesRouter.delete("/:id", async (req, res) => {
   const { id } = req.params;
+
+  const result = await MovieModel.delete({id})
   const movieIndex = movies.find((movie) => movie.id === id);
-  if (movieIndex === -1) {
+  if (result === false) {
     return res.status(400).json({ message: "Movie not found" });
   }
-  movies.splice(movieIndex, 1);
+
   return res.json({ message: "Movie deleted" });
 });
 
 
-moviesRouter.patch("/:id", (req, res) => {
+moviesRouter.patch ("/:id", async (req, res) => {
   const result = validatePartialMovie(req.body);
 
   if (!result.success) {
@@ -78,18 +76,8 @@ moviesRouter.patch("/:id", (req, res) => {
 
   const { id } = req.params;
 
-  const movieIndex = movies.findIndex((movie) => movie.id === id);
+  const updatedMovie = await MovieModel.update({id, input : result.data})
 
-  if (!movieIndex === -1)
-    return res.status(404).json({ message: "Movie not found" });
-
-  const updateMovie = {
-    ...movies[movieIndex],
-    ...result.data,
-  };
-
-  movies[movieIndex] = updateMovie;
-
-  return res.json(updateMovie);
+  return res.json(updatedMovie);
 });
 
