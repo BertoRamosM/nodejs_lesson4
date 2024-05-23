@@ -14,6 +14,11 @@ import fs from 'node:fs';
 const movies = JSON.parse(fs.readFileSync('./movies.json', 'utf-8')) 
 */
 
+//the json import of the FUTURE will be:
+/* 
+import movies from './movies.json' with {type : json}
+*/
+
 //this is a better way to read JSON in ESModules recommended for now, by creating a method require
 import { createRequire } from 'node:module';
 //Here, createRequire is called with import.meta.url, which is a URL string representing the location of the current module. This creates a require function that can be used within this module as if it were a CommonJS module.
