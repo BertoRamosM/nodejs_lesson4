@@ -21,24 +21,18 @@ const ACCEPTED_ORIGINS = [
   //and any other website that we want to allow, we just need to get the origin from the request header
 ];
 
-import {validateMovie, validatePartialMovie} from "../schemas/movieScheme"
+import {validateMovie, validatePartialMovie} from "../schemas/movieScheme.js"
 
 import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
-const movies = require(".movies.json");
+const movies = require("../movies.json");
 
-const origin = req.header("origin");
-if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
-  res.header("Access-Control-Allow-Origin", origin);
-}
+
 
 export const moviesRouter = Router();
 
 moviesRouter.get("/", (req, res) => {
-  const origin = req.header("origin");
-  if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
-    res.header("Access-Control-Allow-Origin", origin);
-  }
+ 
 
   const { genre } = req.query;
   if (genre) {
