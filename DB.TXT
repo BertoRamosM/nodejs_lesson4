@@ -1,0 +1,19 @@
+we create the db with "CREATE DATABASE databasename"
+
+then we use the database "USE databasename"
+
+then we start migrating the json file into database 
+table with "CREATE TABLE databasename"{
+
+}
+
+to create an id, similar to uuid, we use 
+"id BINARY(16) PRIMARY KEY DEFAULT (UUID_TO_BIN(UUID()))"
+
+to create the titles of the movies "title VARCHAR(255) NOT NULL"
+
+for the year "YEAR INT NOT NULL" etc
+
+for text exists TEXT and VARCHAR, TEXT its used for larger amounts of string
+
+DECIMAL(1, 1) in decimal we say how many numbers in each side of the "," we want in this case just one example: 4,5
